@@ -71,7 +71,7 @@ export default defineConfig({
       registerType: 'autoUpdate',
       includeAssets: ['apple-touch-icon.png'],
       manifest: {
-        name: 'KB손해보험 충청TC 대시보드',
+        name: '충청TC이음',
         short_name: '충청TC이음',
         description: '충청TC 사업단 직원별 실적 대시보드',
         theme_color: '#1A1A2E',

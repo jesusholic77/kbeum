@@ -3,6 +3,7 @@ import react from '@vitejs/plugin-react';
 import fs from 'node:fs';
 import path from 'node:path';
 import { fileURLToPath } from 'node:url';
+import { VitePWA } from 'vite-plugin-pwa';
 
 // 엑셀이 같은 폴더에 있으므로 기본값은 vite.config.js 위치(=프로젝트 루트). KB_DATA_DIR로 덮어쓸 수 있다.
 const __dirname = path.dirname(fileURLToPath(import.meta.url));
@@ -63,6 +64,41 @@ function kbDataPlugin() {
 export default defineConfig({
   // GitHub Pages 서브패스 호환을 위해 상대 경로. user.github.io/kb-tc-dashboard/ 등 모든 형태에서 동작.
   base: './',
-  plugins: [react(), kbDataPlugin()],
+  plugins: [
+    react(),
+    kbDataPlugin(),
+    VitePWA({
+      registerType: 'autoUpdate',
+      includeAssets: ['apple-touch-icon.png'],
+      manifest: {
+        name: 'KB손해보험 충청TC 대시보드',
+        short_name: 'KB TC',
+        description: '충청TC 사업단 직원별 실적 대시보드',
+        theme_color: '#1A1A2E',
+        background_color: '#F4F6FA',
+        display: 'standalone',
+        orientation: 'any',
+        start_url: './',
+        scope: './',
+        lang: 'ko',
+        icons: [
+          { src: 'icon-192.png', sizes: '192x192', type: 'image/png' },
+          { src: 'icon-512.png', sizes: '512x512', type: 'image/png' },
+          { src: 'icon-maskable-192.png', sizes: '192x192', type: 'image/png', purpose: 'maskable' },
+          { src: 'icon-maskable-512.png', sizes: '512x512', type: 'image/png', purpose: 'maskable' },
+        ],
+      },
+      workbox: {
+        // 앱 셸은 캐시하되, Google Sheets API 응답은 항상 네트워크에서.
+        navigateFallback: 'index.html',
+        runtimeCaching: [
+          {
+            urlPattern: ({ url }) => url.origin === 'https://sheets.googleapis.com',
+            handler: 'NetworkOnly',
+          },
+        ],
+      },
+    }),
+  ],
   server: { port: 5173, open: true },
 });

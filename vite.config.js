@@ -72,7 +72,7 @@ export default defineConfig({
       includeAssets: ['apple-touch-icon.png'],
       manifest: {
         name: 'KB손해보험 충청TC 대시보드',
-        short_name: 'KB TC',
+        short_name: '충청TC이음',
         description: '충청TC 사업단 직원별 실적 대시보드',
         theme_color: '#1A1A2E',
         background_color: '#F4F6FA',

@@ -3,6 +3,7 @@ import { loadFromFiles } from './lib/excelLoader.js';
 import { fetchSheetsMeta, inspectAllSchemas, loadFromSheets } from './lib/sheetsLoader.js';
 import { saveOverrides } from './lib/sheetsSchema.js';
 import SchemaConfirmModal from './SchemaConfirmModal.jsx';
+import RaffleModal from './RaffleModal.jsx';
 
 const KB_YELLOW = '#FFB900',
   KB_DARK = '#1A1A2E';
@@ -492,6 +493,7 @@ export default function App() {
   const [loadedAt, setLoadedAt] = useState(null);
   const [meta, setMeta] = useState(null); // { source, loadedAt } 또는 null
   const [schemaInspection, setSchemaInspection] = useState(null); // 충돌 시 모달용
+  const [raffleOpen, setRaffleOpen] = useState(false);
   const fileRef = useRef();
 
   const reload = useCallback(async () => {
@@ -720,6 +722,12 @@ export default function App() {
           onCancel={handleSchemaCancel}
         />
       )}
+      {raffleOpen && (
+        <RaffleModal
+          employees={data}
+          onClose={() => setRaffleOpen(false)}
+        />
+      )}
       <div style={{ height: 5, background: KB_YELLOW }} />
       <div
         style={{
@@ -794,6 +802,23 @@ export default function App() {
           </button>
           {user.role === 'admin' && (
             <>
+              <button
+                onClick={() => setRaffleOpen(true)}
+                disabled={data.length === 0}
+                style={{
+                  background: data.length === 0 ? 'rgba(255,255,255,.12)' : '#DC2626',
+                  color: data.length === 0 ? 'rgba(255,255,255,.5)' : '#fff',
+                  border: 'none',
+                  borderRadius: 7,
+                  padding: '7px 14px',
+                  fontSize: 13,
+                  cursor: data.length === 0 ? 'not-allowed' : 'pointer',
+                  fontWeight: 900,
+                  fontFamily: 'inherit',
+                }}
+              >
+                🎁 오늘의 추첨
+              </button>
               <button
                 onClick={() => fileRef.current.click()}
                 style={{
